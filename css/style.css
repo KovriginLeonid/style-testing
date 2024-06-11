@@ -29,6 +29,7 @@ li {
 }
 
 p {
+    font-size: 20px;
     margin-bottom: 10px;
 }
 
@@ -58,12 +59,8 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 @keyframes fade {
-    from {
-        opacity: 0;
-    }
-    to {
-        opacity: 1;
-    }
+    from { opacity: 0;}
+    to { opacity: 1;}
 }
 .container {
     width: 90vw;
@@ -74,6 +71,88 @@ h1, h2, h3, h4, h5, h6 {
 
 section {
     margin-bottom: 50px;
+}
+
+ /* модальные окна */
+
+dialog {
+    display: none;
+    opacity: 0;
+    translate: 0 25vh;
+    transition-property: overlay display opacity;
+    transition-duration: 1s;
+    transition-behavior: allow-discrete;
+}
+
+dialog[open] {
+    display: block;
+    opacity: 1;
+    translate: 0 0;
+
+    @starting-style {
+        opacity: 0;
+        translate: 0 -25vh;
+    }
+}
+
+dialog::backdrop {
+    opacity: 0;
+    transition-property: overlay display opacity;
+    transition-duration: 1s;
+    transition-behavior: allow-discrete;
+    background-image: linear-gradient(45deg, rgb(0, 247, 255), rgb(253, 180, 23));
+}
+
+dialog[open]::backdrop {
+    opacity: 0.8;
+}
+
+@starting-style {
+    dialog[open]::backdrop {
+        opacity: 0;
+    }
+}
+
+/* анимации на скролл */
+
+@keyframes fade-scale {
+    to {scale: 1; opacity: 1;}
+}
+
+@keyframes fade-out {
+    from { opacity: 1;}
+    to { opacity: 0;}
+}
+
+@keyframes slide-in {
+    to {translate: 0px; opacity: 1;}
+}
+
+ @media (prefers-reduced-motion: no-preference) {  /* обёртка для людей, которых укачивает от обилия анимаций */
+    ul > li {
+        scale: .6; opacity: 0;
+        animation: fade-scale linear forwards; /* forwards останавливает анимацию на 100%, что бы текс не исчезал */
+        animation-timeline: view();
+        animation-range: entry 5vh;
+    }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    li > p {
+        opacity: 0;
+        translate: -350px;
+        animation: slide-in linear forwards;
+        animation-timeline: view();
+        animation-range: entry cover 40vh;
+    }
+}
+
+@supports (animation-timeline: view()) {  /*Отключает анимацию, если браузер её не поддерживает, так как заканчивается на opacity:0*/
+    .fade-out {
+        animation: fade-out linear;
+        animation-timeline: view();
+        animation-range: exit -5vh;
+    }
 }
 
 /*--------Header--------*/
@@ -227,7 +306,7 @@ section {
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     opacity: 0;
-    animation: fade 1s ease-in 1s 1 forwards; /*forwards останавливает анимацию на 100%, что бы текс не исчезал */
+     animation: fade-scale 1s ease-in 1s 1 forwards; 
 }
 
 .text__rainbow {
@@ -295,6 +374,7 @@ section {
 .glass-list {
     display: flex;
     gap: 50px;
+    flex-wrap: wrap;
 }
 
 .glass-list__img {
@@ -304,6 +384,7 @@ section {
 
  .glass-list__item { /* через background-img можно сделать градиентное стекло */
     padding: 20px 0px 20px 30px;
+    flex: 1 0 28%;
     background-color: rgb(255, 255, 255, 0.25);
     backdrop-filter: blur(5px);
     -webkit-backdrop-filter: blur(5px);
@@ -343,6 +424,21 @@ section {
 }
 
 .section-three {}
+
+.modal__body {
+    max-width: 50vw;
+}
+
+.modal__title, .modal__close {
+    margin-bottom: 15px;
+}
+
+.modal__form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
 .section-four {}
 .section-five {}
 .section-six {}
